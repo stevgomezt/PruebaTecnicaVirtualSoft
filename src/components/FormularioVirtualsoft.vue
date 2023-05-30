@@ -408,8 +408,14 @@
                     type="password"
                     v-model="validFields.confirmarContrasena"
                     :class="{
-                      'border-red-500': !validFields.confirmarContrasena,
-                      'border-green-500': validFields.confirmarContrasena,
+                      'border-red-500':
+                        !validFields.confirmarContrasena ||
+                        validFields.contrasena !==
+                          validFields.confirmarContrasena,
+                      'border-green-500':
+                        validFields.confirmarContrasena &&
+                        validFields.contrasena ===
+                          validFields.confirmarContrasena,
                     }"
                     class="border rounded-md px-4 py-2 focus:outline-none mx-2"
                     @input="validateField(validFields.confirmarContrasena)"
@@ -424,13 +430,19 @@
                   </p>
                 </div>
                 <p
-                  v-show="!validFields.confirmarContrasena"
+                  v-show="
+                    !validFields.confirmarContrasena ||
+                    validFields.contrasena !== validFields.confirmarContrasena
+                  "
                   class="ml-2 text-red-500"
                 >
                   X
                 </p>
                 <p
-                  v-show="validFields.confirmarContrasena"
+                  v-show="
+                    validFields.confirmarContrasena &&
+                    validFields.contrasena === validFields.confirmarContrasena
+                  "
                   class="ml-2 text-green-500"
                 >
                   ✓
