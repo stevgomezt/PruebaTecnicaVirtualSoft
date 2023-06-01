@@ -20,8 +20,8 @@
           <div v-show="currentStep === 1">
             <!-- Paso 1 -->
             <h3 class="text-xl font-bold mb-4">Paso 1: Información personal</h3>
-            <div class="flex flex-row justify-stretch">
-              <div class="flex-grow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="">
                 <!-- País -->
                 <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
@@ -83,7 +83,7 @@
                 </div>
 
                 <!-- Primer nombre -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Primer nombre</label
                   >
@@ -110,7 +110,7 @@
                 </div>
 
                 <!-- Segundo nombre -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Segundo nombre</label
                   >
@@ -137,7 +137,7 @@
                 </div>
 
                 <!-- Fecha de nacimiento -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Fecha de nacimiento</label
                   >
@@ -188,7 +188,7 @@
 
               <div class="flex-grow">
                 <!-- Tipo de documento -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Tipo de documento</label
                   >
@@ -218,24 +218,34 @@
                 </div>
 
                 <!-- Número de documento -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-6 flex items-center text-start mx-0">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Numero de documento</label
                   >
-                  <input
-                    type="number"
-                    v-model="validFields.numeroDocumento"
-                    :class="{
-                      'border-red-500': validFields.numeroDocumento.length < 5,
-                      'border-green-500':
-                        validFields.numeroDocumento &&
-                        validFields.numeroDocumento.length >= 5,
-                    }"
-                    class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                    @input="validateField(validFields.numeroDocumento)"
-                    pattern="[0-9]+"
-                    inputmode="numeric"
-                  />
+                  <div class="relative">
+                    <input
+                      type="number"
+                      v-model="validFields.numeroDocumento"
+                      :class="{
+                        'border-red-500':
+                          validFields.numeroDocumento.length < 5,
+                        'border-green-500':
+                          validFields.numeroDocumento &&
+                          validFields.numeroDocumento.length >= 5,
+                      }"
+                      class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                      @input="validateField(validFields.numeroDocumento)"
+                      pattern="[0-9]+"
+                      inputmode="numeric"
+                    />
+                    <p
+                      v-if="validFields.numeroDocumento.length <= 4"
+                      style="color: red"
+                      class="absolute left-3 top-19"
+                    >
+                      Debes tener al menos 5 dígitos.
+                    </p>
+                  </div>
                   <span
                     v-show="validFields.numeroDocumento.length < 5"
                     class="ml-2 text-red-500"
@@ -252,7 +262,7 @@
                 </div>
 
                 <!-- Documento Frente -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Documento - Frente</label
                   >
@@ -280,7 +290,7 @@
                 </div>
 
                 <!-- Documento Reverso -->
-                <div class="mb-4 flex items-center text-start mx-0">
+                <div class="mb-4 flex items-center text-start">
                   <label class="block font-bold text-cyan-600 mr-2 text-sm"
                     >Documento - Reverso</label
                   >
@@ -328,181 +338,190 @@
             <h3 class="text-xl font-bold mb-4">
               Paso 2: Información de contacto
             </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="">
+                <!-- Correo electrónico -->
+                <div class="mb-7 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Correo electrónico</label
+                  >
+                  <div class="relative">
+                    <input
+                      type="email"
+                      v-model="validFields.correoElectronico"
+                      :class="{
+                        'border-red-500':
+                          !validFields.correoElectronico ||
+                          !validarCorreoElectronico(
+                            validFields.correoElectronico
+                          ),
+                        'border-green-500': validFields.correoElectronico,
+                      }"
+                      class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                      @input="validateField(validFields.correoElectronico)"
+                    />
+                    <p
+                      v-show="
+                        !validFields.correoElectronico ||
+                        !validarCorreoElectronico(validFields.correoElectronico)
+                      "
+                      class="text-red-500 absolute left-3 top-10"
+                    >
+                      Correo electrónico incorrecto
+                    </p>
+                  </div>
+                  <span
+                    v-show="
+                      !validFields.correoElectronico ||
+                      !validarCorreoElectronico(validFields.correoElectronico)
+                    "
+                    class="ml-2 text-red-500"
+                    >X</span
+                  >
+                  <span
+                    v-show="
+                      validFields.correoElectronico &&
+                      validarCorreoElectronico(validFields.correoElectronico)
+                    "
+                    class="ml-2 text-green-500"
+                    >✓</span
+                  >
+                </div>
 
-            <!-- Correo electrónico -->
-            <div class="mb-4 flex items-center text-start">
-              <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                >Correo electrónico</label
-              >
-              <input
-                type="email"
-                v-model="validFields.correoElectronico"
-                :class="{
-                  'border-red-500':
-                    !validFields.correoElectronico ||
-                    !validarCorreoElectronico(validFields.correoElectronico),
-                  'border-green-500': validFields.correoElectronico,
-                }"
-                class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                @input="validateField(validFields.correoElectronico)"
-              />
-              <span
-                v-show="
-                  !validFields.correoElectronico ||
-                  !validarCorreoElectronico(validFields.correoElectronico)
-                "
-                class="ml-2 text-red-500"
-                >X</span
-              >
-              <span
-                v-show="
-                  validFields.correoElectronico &&
-                  validarCorreoElectronico(validFields.correoElectronico)
-                "
-                class="ml-2 text-green-500"
-                >✓</span
-              >
-              <span
-                v-show="
-                  !validFields.correoElectronico ||
-                  !validarCorreoElectronico(validFields.correoElectronico)
-                "
-                class="text-red-500"
-                >Ingrese un correo electrónico válido</span
-              >
-            </div>
-
-            <div class="flex justify-start mx-0">
-              <!-- Contraseña -->
-              <div class="mb-4 flex items-center text-start">
-                <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                  >Contraseña</label
-                >
-                <input
-                  type="password"
-                  v-model="validFields.contrasena"
-                  :class="{
-                    'border-red-500': !validFields.contrasena,
-                    'border-green-500': validFields.contrasena,
-                  }"
-                  class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                  @input="validateField(validFields.contrasena)"
-                />
-                <span v-show="!validFields.contrasena" class="ml-2 text-red-500"
-                  >X</span
-                >
-                <span
-                  v-show="validFields.contrasena"
-                  class="ml-2 text-green-500"
-                  >✓</span
-                >
-              </div>
-
-              <!-- Confirmación de Contraseña -->
-              <div class="mb-4 flex items-center text-start">
-                <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                  >Confirmación de Contraseña</label
-                >
-                <div class="relative">
+                <!-- Contraseña -->
+                <div class="mb-4 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Contraseña</label
+                  >
                   <input
                     type="password"
-                    v-model="validFields.confirmarContrasena"
+                    v-model="validFields.contrasena"
                     :class="{
-                      'border-red-500':
-                        !validFields.confirmarContrasena ||
-                        validFields.contrasena !==
-                          validFields.confirmarContrasena,
-                      'border-green-500':
-                        validFields.confirmarContrasena &&
-                        validFields.contrasena ===
-                          validFields.confirmarContrasena,
+                      'border-red-500': !validFields.contrasena,
+                      'border-green-500': validFields.contrasena,
                     }"
                     class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                    @input="validateField(validFields.confirmarContrasena)"
+                    @input="validateField(validFields.contrasena)"
                   />
+                  <span
+                    v-show="!validFields.contrasena"
+                    class="ml-2 text-red-500"
+                    >X</span
+                  >
+                  <span
+                    v-show="validFields.contrasena"
+                    class="ml-2 text-green-500"
+                    >✓</span
+                  >
+                </div>
+
+                <!-- Confirmación de Contraseña -->
+                <div class="mb-4 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Confirmación de Contraseña</label
+                  >
+                  <div class="relative">
+                    <input
+                      type="password"
+                      v-model="validFields.confirmarContrasena"
+                      :class="{
+                        'border-red-500':
+                          !validFields.confirmarContrasena ||
+                          validFields.contrasena !==
+                            validFields.confirmarContrasena,
+                        'border-green-500':
+                          validFields.confirmarContrasena &&
+                          validFields.contrasena ===
+                            validFields.confirmarContrasena,
+                      }"
+                      class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                      @input="validateField(validFields.confirmarContrasena)"
+                    />
+                    <p
+                      v-show="
+                        validFields.contrasena !==
+                        validFields.confirmarContrasena
+                      "
+                      class="text-red-500 absolute left-3 top-19"
+                    >
+                      Las contraseñas no coinciden
+                    </p>
+                  </div>
                   <p
                     v-show="
+                      !validFields.confirmarContrasena ||
                       validFields.contrasena !== validFields.confirmarContrasena
                     "
-                    class="text-red-500 absolute left-3 top-19"
+                    class="ml-2 text-red-500"
                   >
-                    Las contraseñas no coinciden
+                    X
+                  </p>
+                  <p
+                    v-show="
+                      validFields.confirmarContrasena &&
+                      validFields.contrasena === validFields.confirmarContrasena
+                    "
+                    class="ml-2 text-green-500"
+                  >
+                    ✓
                   </p>
                 </div>
-                <p
-                  v-show="
-                    !validFields.confirmarContrasena ||
-                    validFields.contrasena !== validFields.confirmarContrasena
-                  "
-                  class="ml-2 text-red-500"
-                >
-                  X
-                </p>
-                <p
-                  v-show="
-                    validFields.confirmarContrasena &&
-                    validFields.contrasena === validFields.confirmarContrasena
-                  "
-                  class="ml-2 text-green-500"
-                >
-                  ✓
-                </p>
-              </div>
-            </div>
-
-            <div class="flex justify-start">
-              <!-- Numero de teléfono -->
-              <div class="mb-4 flex items-center text-start">
-                <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                  >Número de teléfono</label
-                >
-                <input
-                  type="text"
-                  v-model="validFields.numeroTelefono"
-                  :class="{
-                    'border-red-500': !validFields.numeroTelefono,
-                    'border-green-500': validFields.numeroTelefono,
-                  }"
-                  class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                  @input="validateField(validFields.numeroTelefono)"
-                />
-                <span
-                  v-show="!validFields.numeroTelefono"
-                  class="ml-2 text-red-500"
-                  >X</span
-                >
-                <span
-                  v-show="validFields.numeroTelefono"
-                  class="ml-2 text-green-500"
-                  >✓</span
-                >
               </div>
 
-              <!-- Numero de celular -->
-              <div class="mb-4 flex items-center text-start">
-                <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                  >Número de celular</label
-                >
-                <input
-                  type="text"
-                  v-model="validFields.numeroCelular"
-                  :class="{
-                    'border-red-500': !validFields.numeroCelular,
-                    'border-green-500': validFields.numeroCelular,
-                  }"
-                  class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                  @input="validateField(validFields.numeroCelular)"
-                />
-                <span
-                  v-show="!validFields.numeroCelular"
-                  class="ml-2 text-red-500"
-                  >X</span
-                >
-                <span
-                  v-show="validFields.numeroCelular"
-                  class="ml-2 text-green-500"
-                  >✓</span
-                >
+              <div class="flex-grow">
+                <!-- Numero de teléfono -->
+                <div class="mb-4 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Número de teléfono</label
+                  >
+                  <input
+                    type="text"
+                    v-model="validFields.numeroTelefono"
+                    :class="{
+                      'border-red-500': !validFields.numeroTelefono,
+                      'border-green-500': validFields.numeroTelefono,
+                    }"
+                    class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                    @input="validateField(validFields.numeroTelefono)"
+                  />
+                  <span
+                    v-show="!validFields.numeroTelefono"
+                    class="ml-2 text-red-500"
+                    >X</span
+                  >
+                  <span
+                    v-show="validFields.numeroTelefono"
+                    class="ml-2 text-green-500"
+                    >✓</span
+                  >
+                </div>
+
+                <!-- Numero de celular -->
+                <div class="mb-4 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Número de celular</label
+                  >
+                  <input
+                    type="text"
+                    v-model="validFields.numeroCelular"
+                    :class="{
+                      'border-red-500': !validFields.numeroCelular,
+                      'border-green-500': validFields.numeroCelular,
+                    }"
+                    class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                    @input="validateField(validFields.numeroCelular)"
+                  />
+                  <span
+                    v-show="!validFields.numeroCelular"
+                    class="ml-2 text-red-500"
+                    >X</span
+                  >
+                  <span
+                    v-show="validFields.numeroCelular"
+                    class="ml-2 text-green-500"
+                    >✓</span
+                  >
+                </div>
               </div>
             </div>
 
@@ -531,60 +550,62 @@
             <h3 class="text-xl font-bold mb-4">
               Paso 3: Información de residencia
             </h3>
-
-            <div class="flex justify-between">
-              <!-- Dirección de residencia -->
-              <div class="mb-4 flex items-center text-start">
-                <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                  >Dirección de residencia</label
-                >
-                <input
-                  type="text"
-                  v-model="validFields.direccionResidencia"
-                  :class="{
-                    'border-red-500': !validFields.direccionResidencia,
-                    'border-green-500': validFields.direccionResidencia,
-                  }"
-                  class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                  @input="validateField(validFields.direccionResidencia)"
-                />
-                <span
-                  v-show="!validFields.direccionResidencia"
-                  class="ml-2 text-red-500"
-                  >X</span
-                >
-                <span
-                  v-show="validFields.direccionResidencia"
-                  class="ml-2 text-green-500"
-                  >✓</span
-                >
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="">
+                <!-- Dirección de residencia -->
+                <div class="mb-4 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Dirección de residencia</label
+                  >
+                  <input
+                    type="text"
+                    v-model="validFields.direccionResidencia"
+                    :class="{
+                      'border-red-500': !validFields.direccionResidencia,
+                      'border-green-500': validFields.direccionResidencia,
+                    }"
+                    class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                    @input="validateField(validFields.direccionResidencia)"
+                  />
+                  <span
+                    v-show="!validFields.direccionResidencia"
+                    class="ml-2 text-red-500"
+                    >X</span
+                  >
+                  <span
+                    v-show="validFields.direccionResidencia"
+                    class="ml-2 text-green-500"
+                    >✓</span
+                  >
+                </div>
               </div>
-
-              <!-- Código postal -->
-              <div class="mb-4 flex items-center text-start">
-                <label class="block font-bold text-cyan-600 mr-2 text-sm"
-                  >Código postal</label
-                >
-                <input
-                  type="text"
-                  v-model="validFields.codigoPostal"
-                  :class="{
-                    'border-red-500': !validFields.codigoPostal,
-                    'border-green-500': validFields.codigoPostal,
-                  }"
-                  class="border rounded-md px-4 py-2 focus:outline-none mx-2"
-                  @input="validateField(validFields.codigoPostal)"
-                />
-                <span
-                  v-show="!validFields.codigoPostal"
-                  class="ml-2 text-red-500"
-                  >X</span
-                >
-                <span
-                  v-show="validFields.codigoPostal"
-                  class="ml-2 text-green-500"
-                  >✓</span
-                >
+              <div class="">
+                <!-- Código postal -->
+                <div class="mb-4 flex items-center text-start">
+                  <label class="block font-bold text-cyan-600 mr-2 text-sm"
+                    >Código postal</label
+                  >
+                  <input
+                    type="text"
+                    v-model="validFields.codigoPostal"
+                    :class="{
+                      'border-red-500': !validFields.codigoPostal,
+                      'border-green-500': validFields.codigoPostal,
+                    }"
+                    class="border rounded-md px-4 py-2 focus:outline-none mx-2"
+                    @input="validateField(validFields.codigoPostal)"
+                  />
+                  <span
+                    v-show="!validFields.codigoPostal"
+                    class="ml-2 text-red-500"
+                    >X</span
+                  >
+                  <span
+                    v-show="validFields.codigoPostal"
+                    class="ml-2 text-green-500"
+                    >✓</span
+                  >
+                </div>
               </div>
             </div>
 
@@ -679,6 +700,7 @@ export default {
         this.validarEdad(this.validFields.fechaNacimiento) &&
         this.validFields.tipoDocumento !== "" &&
         this.validFields.numeroDocumento !== "" &&
+        this.validFields.numeroDocumento.length > 4 &&
         this.validFields.fotoFrente !== "" &&
         this.validFields.fotoReverso !== ""
       );
@@ -743,6 +765,7 @@ export default {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(correo);
     },
+
     validateField(fieldName) {
       switch (fieldName) {
         case "pais":
